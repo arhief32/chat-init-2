@@ -17,6 +17,9 @@ Route::get('/', function () {
 });
 
 Route::prefix('admin')->group(function(){
+    Route::get('/', function(){
+        return redirect(url('admin/login'));    
+    });
     Route::get('login', 'AdminController@loginPage');
     Route::post('login-validation', 'AdminController@login');
     Route::get('register', 'AdminController@registerPage');
