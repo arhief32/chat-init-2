@@ -1,0 +1,22 @@
+.message-one{
+    background-color: #2B3E50;
+    padding: 10px;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 28px;
+    border-top-right-radius: 28px;
+    margin-top: 6px;
+}
+
+.message-two{
+    background-color: #099;
+    padding: 10px;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 28px;
+    border-top-left-radius: 28px;
+    margin-top: 6px;
+}
+
+.chat-box{
+    height: 500px;
+    overflow: auto;
+}
