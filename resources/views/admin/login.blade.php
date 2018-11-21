@@ -1,51 +1,57 @@
-@extends('admin.main')
+@extends('admin.admin')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Admin Login</div>
 
-                <div class="card-body">
+<!-- login area start -->
+<div class="login-area login-s2">
+        <div class="container">
+            <div class="login-box ptb--100">
+                <form>
+                    <div class="login-form-head">
+                        <img src="{{ asset('public/assets/images/icon/logo-2.png') }}" />
+                    </div>
                     
-                    <div class="alert alert-dismissible alert-primary" hidden>
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        Email dan password tidak cocok.
-                    </div>
-                
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-4 col-form-label text-md-right">Email</label>
-                        <div class="col-md-6">
-                            <input id="email" type="email" class="form-control" name="email" required autofocus>
+                    <div class="login-form-body">
+                        <center><h4>Sign In</h4></center>
+                        <div class="alert-dismiss">
+                            <div class="alert alert-danger alert-dismissible fade" role="alert">
+                                <button type="button" class="close">
+                                    <span class="fa fa-times"></span>
+                                </button>
+                                <strong>Email dan Password</strong> tidak cocok.
+                            </div>
+                        </div>
+                        <div class="form-gp">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email">
+                            <i class="ti-email"></i>
+                        </div>
+                        <div class="form-gp">
+                            <label for="password">Password</label>
+                            <input type="password" id="password">
+                            <i class="ti-lock"></i>
+                        </div>
+                        <div class="submit-btn-area">
+                            <button id="submit-login" type="submit">Submit <i class="ti-arrow-right"></i></button>
+                        </div>
+                        <div class="form-footer text-center mt-5">
+                            <p class="text-muted">Don't have an account? <a href="{{ url('admin/register') }}">Register</a></p>
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
-                        <div class="col-md-6">
-                            <input id="password" type="password" class="form-control" name="password" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group row mb-0">
-                        <div class="col-md-8 offset-md-4">
-                            <button type="submit" class="btn btn-primary" id="submit-login">
-                                Login
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
+    <!-- login area end -->
 
 <script>
 $(document).ready(function(){
-    $('#submit-login').click(function(){
+    $('#submit-login').click(function(e){
+
         var email = $('#email').val()
         var password = $('#password').val()
+
+        e.preventDefault()
         
         $.ajax({
             type: 'POST',
@@ -58,15 +64,17 @@ $(document).ready(function(){
                 password: password,
             },
             success: function(response){
-                console.log(response)
                 if(response.status == 'failed'){
-                    $('.alert').attr('hidden', false);
-                    $('.alert').text('Email dan password tidak cocok.')
+                    $('.alert').addClass('show')
                 }else{
                     window.location.replace('{{ url("admin/chat") }}')
                 }
             }
         })
+    })
+
+    $('.close').click(function(){
+        $('.alert').removeClass('show')
     })
 })
 </script>

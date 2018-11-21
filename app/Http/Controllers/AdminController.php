@@ -13,7 +13,7 @@ class AdminController extends Controller
     {
         if(session('session') == true)
         {
-            return view('admin/chat',[$this->listUser()]);
+            return redirect(url('admin/chat'));
         }
         else
         {
@@ -67,7 +67,7 @@ class AdminController extends Controller
     {
         if(session('session') == true)
         {
-            return view('admin/chat');
+            return redirect(url('admin/chat'));
         }
         else
         {
@@ -82,6 +82,7 @@ class AdminController extends Controller
 
         $select_data = User::where([
             ['email', $email],
+            ['password', $password],
             ['roles', 'admin']
         ])->first();
 
