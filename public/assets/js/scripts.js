@@ -44,6 +44,9 @@
     $('.timeline-area').slimScroll({
         height: '500px'
     });
+    $('.member-box').slimScroll({
+        height: '500px'
+    });
     $('.recent-activity').slimScroll({
         height: 'calc(100vh - 114px)'
     });
