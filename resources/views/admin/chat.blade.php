@@ -1,7 +1,66 @@
 @extends('admin.main')
 
 @section('content')
-<div class="container" id="application">
+
+<div class="row">
+<!-- team member area start -->
+<div class="col-lg-4 mt-5" style="height: 650px;">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-sm-flex justify-content-between align-items-center">
+                <h4 class="header-title"></h4>
+                <div class="trd-history-tabs">
+                    <ul class="nav" role="tablist">
+                        <li>
+                            <a class="active" data-toggle="tab" href="#conversation"  id="conversation-tab" role="tab">Conversation</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#unapproved" id="unapproved-tab" role="tab">Unapproved</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="custome-select border-0 pr-3"></div>
+            </div>
+
+            <div class="trad-history mt-4">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="conversation" role="tabpanel" style="height: 500px; overflow: auto;">
+                        
+                    </div>
+                    <div class="tab-pane fade" id="unapproved" role="tabpanel" style="height: 500px; overflow: auto;">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- team member area end -->
+
+<!-- trading history area start -->
+<div class="col-lg-8 mt-5" style="height: 650px;">
+    <div class="card" style="height: 600px; overflow: auto;">
+        <div class="card-body">
+            <div class="d-sm-flex justify-content-between align-items-center">
+                <h4 class="header-title">Chat Box</h4>
+                
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="input-group">
+                <input class="form-control mb-4" type="text" placeholder="Input message here">
+                <button type="button" class="btn btn-flat btn-primary mb-4">Kirim</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- trading history area end -->
+</div>
+
+
+
+
+<!-- <div class="container" id="application">
     <div class="row justify-content-center">
     <div class="col-md-4">
             <div class="card">
@@ -41,7 +100,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
 
@@ -66,12 +125,18 @@ $(document).ready(function(){
                 $('#conversation').empty()
                 
                 $.each(response, function(){
-                    $('#conversation').append('<div class="header conversation conversation-'+ this.id +'" style="margin-top: 20px; height: 40px; line-height: 35px;">'+
-                        '<strong>'+ this.user.name +'</strong>'+
-                        '<button class="btn btn-danger btn-sm float-right break-chat" data-info="'+ this.id +'">Break</button>'+
-                        '<button class="btn btn-primary btn-sm float-right open-chat" data-info="'+ this.id +','+ this.user.name +'" style="margin-right: 5px;">Open</button>'+
+                    $('#conversation').append('<div class="s-member conversation conversation-'+ this.id +'">'+
+                            '<div class="media align-items-center">'+
+                                '<img src="{{ asset("public/assets/images/author/avatar.png") }}" class="d-block ui-w-30 rounded-circle" alt="">'+
+                                '<div class="media-body ml-5">'+
+                                    '<p>'+ this.user.name +'</p><span>'+ this.created_at +'</span>'+
+                                '</div>'+
+                                '<div class="tm-social">'+
+                                    '<a href="#"><i class="fa fa-wechat open-chat" data-info="'+ this.id +','+ this.user.name +'"></i></a>'+
+                                    '<a href="#"><i class="fa fa-unlink break-chat" data-info="'+ this.id +'"></i></a>'+
+                                '</div>'+
+                            '</div>'+
                         '</div>')
-                    
                 })
             }
         })
@@ -92,10 +157,17 @@ $(document).ready(function(){
             success: function(response){
                 $('#unapproved').empty()
                 $.each(response, function(){
-                    $('#unapproved').append('<div class="header unapproved unapproved-'+ this.id +'" style="margin-top: 20px; height: 40px; line-height: 35px;">'+
-                        '<strong>'+ this.name +'</strong>'+
-                        '<button class="btn btn-primary btn-sm float-right button-approved" data-info="'+ this.id +'">Approve</button>'+
-                        '</div>')
+                    $('#unapproved').append('<div class="s-member unapproved unapproved-'+ this.id +'">'+
+                        '<div class="media align-items-center">'+
+                            '<img src="{{ asset("public/assets/images/author/avatar.png") }}" class="d-block ui-w-30 rounded-circle" alt="">'+
+                            '<div class="media-body ml-5">'+
+                                '<p>'+ this.name +'</p><span>Manager</span>'+
+                            '</div>'+
+                            '<div class="tm-social">'+
+                                '<button class="btn btn-flat btn-primary btn-xs button-approved" data-info="'+ this.id +'">Approve</button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>')
                 })
             }
         })
