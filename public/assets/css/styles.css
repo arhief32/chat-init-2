@@ -141,7 +141,7 @@
 .sidebar-header {
     padding: 19px 32px 20px;
     background: #fff;
-    border-bottom: 1px solid #343e50;
+    /* border-bottom: 1px solid #343e50; */
 }
 .sidebar-menu .logo{
     text-align: center;

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Conversation;
 use App\Message;
+use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function registerPage()
@@ -17,7 +18,7 @@ class AdminController extends Controller
         }
         else
         {
-            return view('admin/register');
+            return view('admin/register', ['title' => 'Register']);
         }
         
     }
@@ -71,7 +72,7 @@ class AdminController extends Controller
         }
         else
         {
-            return view('admin/login');
+            return view('admin/login', ['title' => 'Login']);
         }
     }
 
@@ -112,7 +113,7 @@ class AdminController extends Controller
     {
         if(session('session') == true)
         {
-            return view('admin/chat');
+            return view('admin/chat', ['title' => 'Conversation']);
         }
         else
         {
