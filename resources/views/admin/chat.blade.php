@@ -39,68 +39,21 @@
 
 <!-- trading history area start -->
 <div class="col-lg-8 mt-5" style="height: 650px;">
-    <div class="card" style="height: 600px; overflow: auto;">
+    <div class="card">
+        <div class="card-header">Chat Box</div>
         <div class="card-body">
-            <div class="d-sm-flex justify-content-between align-items-center">
-                <h4 class="header-title">Chat Box</h4>
-                
-            </div>
+            <div class="chat-box"></div>
         </div>
         <div class="card-footer">
             <div class="input-group">
-                <input class="form-control mb-4" type="text" placeholder="Input message here">
-                <button type="button" class="btn btn-flat btn-primary mb-4">Kirim</button>
+                <input id="chat-textbox" class="form-control mb-4" type="text" placeholder="Input message here" disabled>
+                <button id="chat-button" type="button" class="btn btn-flat btn-primary mb-4" disabled>Kirim</button>
             </div>
         </div>
     </div>
 </div>
 <!-- trading history area end -->
 </div>
-
-
-
-
-<!-- <div class="container" id="application">
-    <div class="row justify-content-center">
-    <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">Conversation</div>
-                <div class="card-body" style="height: 500px; overflow: auto;">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active show" data-toggle="tab" href="#conversation" id="conversation-tab">Conversation</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#unapproved" id="unapproved-tab">Unapproved</a>
-                        </li>
-                    </ul>
-                    <div id="myTabContent" class="tab-content">
-                        <div class="tab-pane fade active show" id="conversation">
-                        
-                        </div>
-                        <div class="tab-pane fade" id="unapproved">
-                             
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header" id="card-header">Chat-Box</div>
-                <div class="card-body chat-box" style="height: 500px; overflow: auto;">
-                
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Input chat here..." id="chat-textbox" disabled>
-                    <button class="btn btn-primary" id="chat-button" data-info="" disabled>Kirim</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 
 
@@ -129,11 +82,11 @@ $(document).ready(function(){
                             '<div class="media align-items-center">'+
                                 '<img src="{{ asset("public/assets/images/author/avatar.png") }}" class="d-block ui-w-30 rounded-circle" alt="">'+
                                 '<div class="media-body ml-5">'+
-                                    '<p>'+ this.user.name +'</p><span>'+ this.created_at +'</span>'+
+                                    '<p>'+ this.user.name +'</p><span>'+ $.format.date(this.created_at, 'dd-MM-yyyy, HH:mm') +'</span>'+
                                 '</div>'+
                                 '<div class="tm-social">'+
-                                    '<a href="#"><i class="fa fa-wechat open-chat" data-info="'+ this.id +','+ this.user.name +'"></i></a>'+
-                                    '<a href="#"><i class="fa fa-unlink break-chat" data-info="'+ this.id +'"></i></a>'+
+                                    '<a href="#" class="open-chat" data-info="'+ this.id +','+ this.user.name +'"><i class="fa fa-wechat"></i></a>'+
+                                    '<a href="#" class="break-chat" data-info="'+ this.id +'"><i class="fa fa-unlink"></i></a>'+
                                 '</div>'+
                             '</div>'+
                         '</div>')
@@ -161,7 +114,7 @@ $(document).ready(function(){
                         '<div class="media align-items-center">'+
                             '<img src="{{ asset("public/assets/images/author/avatar.png") }}" class="d-block ui-w-30 rounded-circle" alt="">'+
                             '<div class="media-body ml-5">'+
-                                '<p>'+ this.name +'</p><span>Manager</span>'+
+                                '<p>'+ this.name +'</p><span>'+ $.format.date(this.updated_at, 'dd-MM-yyyy, HH:mm') +'</span>'+
                             '</div>'+
                             '<div class="tm-social">'+
                                 '<button class="btn btn-flat btn-primary btn-xs button-approved" data-info="'+ this.id +'">Approve</button>'+
@@ -177,6 +130,8 @@ $(document).ready(function(){
         var admin_id = {{ session('session.id') }}
         var user_id = $(this).attr('data-info')
         
+        $('.unapproved-'+user_id).attr('hidden', true)
+        
         $.ajax({
             type: 'GET',
             url: '{{ url("admin/approved") }}?admin_id='+ admin_id +'&&user_id='+user_id,
@@ -189,6 +144,43 @@ $(document).ready(function(){
         })
     })
 
+    function conversationSplit(response){
+        if(response.user.roles == 'admin'){
+            $('.chat-box').append('<div class="msg header-message">'+
+                '<div class="bubble">'+
+                    '<div class="txt">'+
+                        '<span class="name">'+ response.user.name +'</span>'+
+                        '<span class="timestamp">'+ $.format.date(response.created_at, 'HH:mm') +'</span>'+      
+                        '<span class="message">'+
+                            response.message +
+                        '</span> '+
+                    '</div>'+
+                '<div class="bubble-arrow"></div>'+
+                '</div>'+
+            '</div>')
+            $('.chat-box').animate({
+                scrollTop: $('.chat-box').get(0).scrollHeight
+            }, 1)
+        }
+        else {
+            $('.chat-box').append('<div class="msg header-message">'+
+                '<div class="bubble alt">'+
+                    '<div class="txt">'+
+                        '<span class="name">'+ response.user.name +'</span>'+
+                        '<span class="timestamp">'+ $.format.date(response.created_at, 'HH:mm') +'</span>'+      
+                        '<span class="message">'+
+                        response.message + 
+                        '</span> '+
+                    '</div>'+
+                    '<div class="bubble-arrow"></div>'+
+                '</div>'+
+            '</div>')
+            $('.chat-box').animate({
+                scrollTop: $('.chat-box').get(0).scrollHeight
+            }, 1)
+        }
+    }
+
     var conversation_id = ''
     $('#conversation').on('click', '.open-chat', function() {
         var data_info = $(this).attr('data-info').split(',')
@@ -196,7 +188,6 @@ $(document).ready(function(){
         var user_name = data_info[1]
 
         $('.header-message').remove()
-        $('.body-message').remove()
         
         $('#chat-textbox').attr('disabled', false)
         $('#chat-button').attr('disabled', false)
@@ -215,45 +206,11 @@ $(document).ready(function(){
                 conversation_id = response.conversation.id
                 var channel_message = pusher.subscribe('channel-message-'+ conversation_id)
                 channel_message.bind('event-message-'+ conversation_id, function(data) {
-                    if(data.user.roles == 'admin'){
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ data.user.name +'</strong>'+
-                            '<small class="float-right">'+ data.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-one body-message">'+ data.message +'</div>')
-                        $('.chat-box').animate({
-                            scrollTop: $('.chat-box').get(0).scrollHeight
-                        }, 1)
-                    }
-                    else {
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ data.user.name +'</strong>'+
-                            '<small class="float-right">'+ data.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-two body-message">'+ data.message +'</div>')
-                        $('.chat-box').animate({
-                            scrollTop: $('.chat-box').get(0).scrollHeight
-                        }, 1)
-                    }
+                    conversationSplit(data)
                 })
                 
                 $.each(response.messages, function(){
-                    if(this.user.roles == 'admin'){
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ this.user.name +'</strong>'+
-                            '<small class="float-right">'+ this.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-one body-message">'+ this.message +'</div>')
-                    }else{
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ this.user.name +'</strong>'+
-                            '<small class="float-right">'+ this.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-two body-message">'+ this.message +'</div>')
-                    }
-                    $('.chat-box').animate({
-                        scrollTop: $('.chat-box').get(0).scrollHeight
-                    }, 1)
+                    conversationSplit(this)
                 })
             }
         })
@@ -261,7 +218,9 @@ $(document).ready(function(){
 
     $('#conversation').on('click', '.break-chat', function() {
         var id = $(this).attr('data-info')
-        
+
+        $('.conversation-'+ id).attr('hidden', true)
+
         $.ajax({
             type: 'GET',
             url: '{{ url("admin/break-conversation") }}?id='+ id,
