@@ -158,6 +158,7 @@ class AdminController extends Controller
         $user->status = 1;
         $user->save();
 
+        // Create Conversation
         $conversation = new Conversation;
         $conversation->admin_id = $admin_id;
         $conversation->user_id = $user_id;
@@ -167,7 +168,9 @@ class AdminController extends Controller
         $conversation = Conversation::with('admin', 'user')->where([
             ['admin_id', $admin_id],
             ['user_id', $user_id],
-        ])->first();
+        ])
+        ->orderBy('id', 'desc')
+        ->first();
 
         // Send Approved Status User to Open Chat Box User
         $client = new \GuzzleHttp\Client();
@@ -177,6 +180,15 @@ class AdminController extends Controller
             ],
             'body' => $conversation,
         ]);
+
+        // Send Greeting Message
+        $message = new Message;
+        $message->conversation_id = $conversation->id;
+        $message->user_id = $conversation->user_id;
+        $message->message = 'Halo '.$conversation->user->name.
+            '! Terima kasih telah menghubungi kami, saya '.$conversation->admin->name.
+            ' dari tim support akan melayani pertanyaan anda. Ada yang bisa saya bantu?';
+        $message->save();
 
         return response()->json($conversation);
     }
