@@ -1,7 +1,7 @@
 @extends('user')
 
 @section('content')
-<div class="container">
+<!-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -56,7 +56,39 @@
             </div>
         </div>
     </div>
+</div> -->
+
+<!-- login area start -->
+<div class="login-area login-s2">
+    <div class="container">
+        <div class="login-box ptb--100">
+            <form>
+                <div class="login-form-head">
+                    <img src="{{ asset('public/assets/images/icon/logo-2.png') }}" />
+                </div>
+                <div class="login-form-head">
+                    <h4>Start!</h4>
+                </div>
+                <div class="login-form-body">
+                    <div class="form-gp">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email">
+                        <i class="ti-email"></i>
+                    </div>
+                    <div class="form-gp">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name">
+                        <i class="ti-user"></i>
+                    </div>
+                    <div class="submit-btn-area">
+                        <button id="submit-start" type="submit">Submit <i class="ti-arrow-right"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+<!-- login area end -->
 
 <script>
 $(document).ready(function(){

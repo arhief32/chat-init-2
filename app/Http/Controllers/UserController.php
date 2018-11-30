@@ -17,7 +17,7 @@ class UserController extends Controller
         }
         else
         {
-            return view('start');
+            return view('start', ['title' => 'Start']);
         }
         
     }
@@ -79,6 +79,17 @@ class UserController extends Controller
         {
             return redirect('start');
         }
+    }
+
+    public function requestConversation(Request $request)
+    {
+        $id = $request->id;
+
+        $user = User::find($id);
+        $user->status = 0;
+        $user->save();
+
+        return response()->json(['status' => 'success']);
     }
 
     public function logout()

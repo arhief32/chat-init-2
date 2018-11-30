@@ -145,7 +145,7 @@ $(document).ready(function(){
     })
 
     function conversationSplit(response){
-        if(response.user.roles == 'admin'){
+        if(response.user.roles == 'user'){
             $('.chat-box').append('<div class="msg header-message">'+
                 '<div class="bubble">'+
                     '<div class="txt">'+
@@ -221,14 +221,18 @@ $(document).ready(function(){
 
         $('.conversation-'+ id).attr('hidden', true)
 
+        $('.card-header').text('Chat Box')
+
+        $('.header-message').remove()
+        
+        $('#chat-textbox').attr('disabled', true)
+        $('#chat-button').attr('disabled', true)
+        
         $.ajax({
             type: 'GET',
             url: '{{ url("admin/break-conversation") }}?id='+ id,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response){
-                $('.conversation-'+ id).attr('hidden', true)
             }
         })
     })

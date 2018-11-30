@@ -46,6 +46,9 @@ Route::post('start-validation', 'UserController@start');
 Route::get('chat', 'UserController@dashboard');
 Route::get('logout', 'UserController@logout');
 
+// Request Chat for User
+Route::get('request-conversation', 'UserController@requestConversation');
+
 // Chat User
 Route::get('check-conversation', 'UserController@checkConversation');
 Route::post('send-message', 'UserController@sendMessage');

@@ -1,24 +1,34 @@
-@extends('user')
+@extends('main')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Chat-Box</div>
-                <div class="card-body chat-box" style="height: 500px; overflow: auto;">
-                
+
+<!-- order list area start -->
+<div class="row">
+    <div class="col-lg-12 col-centered">
+        <div class="container">
+            <div class="card mt-5" style="height: 100%;">
+                <div class="card-body">
+                    <h4 class="header-title">Chat Box</h4>
+                    <center>
+                        <button type="button" class="btn btn-flat btn-primary" id="button-request-conversation">Request Conversation</button>
+                        <p id="message-request-conversation" style="margin-top: 50px;" hidden>Menunggu approve dari admin.</div>
+                        <div class="loader" style="margin-top: 50px;" hidden></div>
+                    </center>
+                    <div class="chat-box"></div>
                 </div>
                 <div class="card-footer">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Input chat here..." id="chat-textbox" disabled>
-                        <button class="btn btn-primary" id="chat-button" disabled>Kirim</button>
+                        <input id="chat-textbox" class="form-control mb-4" type="text" placeholder="Input message here" disabled>
+                        <button id="chat-button" type="button" class="btn btn-flat btn-primary mb-4" disabled>Kirim</button>
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 </div>
+<!-- order list area end -->
+
+
 
 <div class="modal modal-start" data-backdrop="static">
     <div class="modal-dialog" role="document">
@@ -52,15 +62,76 @@ $(document).ready(function(){
     var channel_approve = pusher.subscribe('channel-approve-{{ session("session.id") }}')
     channel_approve.bind('event-approve-{{ session("session.id") }}', function(data) {
         $('.modal-start').modal()
+        $('.modal-body').empty()
         $('.modal-body').append('Anda telah terhubung dengan admin '+ data.admin.name +'<br>Silahkan anda memulai chat.')
+        
+        $('.request-conversation').attr('hidden', true)
+        $('.loader').attr('hidden', true)
 
-        $('.card-header').text('#'+ data.id +' - '+ data.admin.name)
+        $('.header-title').text('#'+ data.id +' - '+ data.admin.name)
+        
         $('#chat-textbox').attr('disabled', false)
         $('#chat-button').attr('disabled', false)
+        
         $('#chat-button').data('info', data.id)
 
         checkConversation()
     })
+
+    function breakConversation(){
+        var break_conversation = pusher.subscribe('channel-break-conversation-'+conversation_id)
+        break_conversation.bind('event-break-conversation-'+conversation_id, function(data) {
+            $('.modal-start').modal()
+            $('.modal-body').empty()
+            $('.modal-body').append('Chat anda telah diputus oleh admin<br>Silahkan anda memulai chat lagi.')
+
+            $('#button-request-conversation').attr('hidden', false) 
+
+            $('.header-title').text('Chat Box')
+            $('.header-message').attr('hidden', true)
+        
+            $('#chat-textbox').attr('disabled', true)
+            $('#chat-button').attr('disabled', true)
+        })
+    }
+    breakConversation()
+
+    function conversationSplit(response){
+        if(response.user.roles == 'admin'){
+            $('.chat-box').append('<div class="msg header-message">'+
+                '<div class="bubble">'+
+                    '<div class="txt">'+
+                        '<span class="name">'+ response.user.name +'</span>'+
+                        '<span class="timestamp">'+ $.format.date(response.created_at, 'HH:mm') +'</span>'+      
+                        '<span class="message">'+
+                            response.message +
+                        '</span> '+
+                    '</div>'+
+                '<div class="bubble-arrow"></div>'+
+                '</div>'+
+            '</div>')
+            $('.chat-box').animate({
+                scrollTop: $('.chat-box').get(0).scrollHeight
+            }, 1)
+        }
+        else {
+            $('.chat-box').append('<div class="msg header-message">'+
+                '<div class="bubble alt">'+
+                    '<div class="txt">'+
+                        '<span class="name">'+ response.user.name +'</span>'+
+                        '<span class="timestamp">'+ $.format.date(response.created_at, 'HH:mm') +'</span>'+      
+                        '<span class="message">'+
+                        response.message + 
+                        '</span> '+
+                    '</div>'+
+                    '<div class="bubble-arrow"></div>'+
+                '</div>'+
+            '</div>')
+            $('.chat-box').animate({
+                scrollTop: $('.chat-box').get(0).scrollHeight
+            }, 1)
+        }
+    }
 
     var conversation_id = ''
     function checkConversation(){
@@ -80,11 +151,14 @@ $(document).ready(function(){
             success: function(response){
                 
                 if(response.conversation){
-                    $('.card-header').text('#'+ response.conversation.id +' - '+ response.conversation.admin.name)
+                    $('#button-request-conversation').attr('hidden', true)
 
+                    $('.header-title').text('#'+ response.conversation.id +' - '+ response.conversation.admin.name)
                     
+                    $('.button-request-conversation').attr('hidden', true)
+                    $('#message-request-conversation').attr('hidden', true)
+                    $('.loader').attr('hidden', true)
 
-                    
                     $('#chat-textbox').attr('disabled', false)
                     $('#chat-button').attr('disabled', false)
 
@@ -94,52 +168,16 @@ $(document).ready(function(){
                 conversation_id = response.conversation.id
                 var channel_message = pusher.subscribe('channel-message-'+ conversation_id)
                 channel_message.bind('event-message-'+ conversation_id, function(data) {
-                    if(data.user.roles == 'admin'){
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ data.user.name +'</strong>'+
-                            '<small class="float-right">'+ data.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-one body-message">'+ data.message +'</div>')
-                        $('.chat-box').animate({
-                            scrollTop: $('.chat-box').get(0).scrollHeight
-                        }, 1)
-                    }
-                    else {
-                        $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                            '<strong>'+ data.user.name +'</strong>'+
-                            '<small class="float-right">'+ data.created_at +'</small>'+
-                            '</div>'+
-                            '<div class="message-two body-message">'+ data.message +'</div>')
-                        $('.chat-box').animate({
-                            scrollTop: $('.chat-box').get(0).scrollHeight
-                        }, 1)
-                    }
-
+                    conversationSplit(data)
                 })
-
-                console.log(response.conversation.user.roles)
 
                 if(response.messages){
                     $.each(response.messages, function(){
-                        if(this.user.roles == 'admin'){
-                            $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                                '<strong>'+ this.user.name +'</strong>'+
-                                '<small class="float-right">'+ this.created_at +'</small>'+
-                                '</div>'+
-                                '<div class="message-one body-message">'+ this.message +'</div>')
-                        }else{
-                            $('.chat-box').append('<div class="header header-message" style="margin-top: 20px;">'+
-                                '<strong>'+ this.user.name +'</strong>'+
-                                '<small class="float-right">'+ this.created_at +'</small>'+
-                                '</div>'+
-                                '<div class="message-two body-message">'+ this.message +'</div>')
-                        }
-                        $('.chat-box').animate({
-                            scrollTop: $('.chat-box').get(0).scrollHeight
-                        }, 1)
+                        conversationSplit(this)
                     })
                 }
-
+                
+                breakConversation()
             }
         })
     }
@@ -180,10 +218,25 @@ $(document).ready(function(){
         }
     })
 
-    var break_conversation = pusher.subscribe('channel-break-conversation-'+conversation_id)
-    break_conversation.bind('event-break-conversation-'+conversation_id, function(data) {
-        $('.modal-start').modal()
-        $('.modal-body').append('Chat anda telah diputus oleh admin<br>Silahkan anda memulai chat lagi.')
+    $('#button-request-conversation').on('click', function() {
+        var id = {{ session('session.id') }}
+
+        $.ajax({
+            type: 'GET',
+            url: '{{ url("request-conversation") }}?id=' + id,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            async: false,
+            success: function(response){
+                $('.modal-start').modal()
+                $('.modal-body').empty()
+                $('.modal-body').append('Terima kasih,<br>Silahkan menunggu konfirmasi dari admin, tidak lama kok')
+                
+                $('#message-request-conversation').attr('hidden', false)
+                $('.loader').attr('hidden', false)
+            }
+        })
     })
 })    
 </script>
