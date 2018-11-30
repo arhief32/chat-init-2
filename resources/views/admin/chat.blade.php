@@ -140,6 +140,7 @@ $(document).ready(function(){
             },
             success: function(response){
                 $('.unapproved-'+user_id).attr('hidden', true)
+                console.log(response)
             }
         })
     })
