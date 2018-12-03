@@ -17,7 +17,7 @@ class CreateConversationsTable extends Migration
             $table->increments('id');
             $table->integer('admin_id');
             $table->integer('user_id');
-            $table->boolean('status_actived');
+            $table->boolean('status');
             $table->timestamps();
         });
     }
