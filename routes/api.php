@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Pusher\Pusher;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,16 +13,16 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('post-approve', function(Request $request){
-    $options = array(
-        'cluster' => 'ap1',
-        'useTLS' => true
-    );
-    $pusher = new Pusher\Pusher(
-        '74f634a0084f2960c016',
-        'eb25feecd3a9d460316e',
-        '647989',
-        $options
+    $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        ]
     );
 
     $data = $request->all();
@@ -31,34 +32,31 @@ Route::post('post-approve', function(Request $request){
 });
 
 Route::post('send-message', function(Request $request){
-    $options = array(
-        'cluster' => 'ap1',
-        'useTLS' => true
-    );
-    $pusher = new Pusher\Pusher(
-        '74f634a0084f2960c016',
-        'eb25feecd3a9d460316e',
-        '647989',
-        $options
+    $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        ]
     );
 
     $data = $request->all();
     $pusher->trigger(
         'channel-message-'.$request->conversation_id, 
-        'event-message-'.$request->conversation_id, $data);    
-    
+        'event-message-'.$request->conversation_id, $data);
 });
 
 Route::post('break-conversation', function(Request $request){
-    $options = array(
-        'cluster' => 'ap1',
-        'useTLS' => true
-    );
-    $pusher = new Pusher\Pusher(
-        '74f634a0084f2960c016',
-        'eb25feecd3a9d460316e',
-        '647989',
-        $options
+    $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        ]
     );
 
     $data = $request->all();
