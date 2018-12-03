@@ -40,7 +40,8 @@ class AdminController extends Controller
                 'name' => $full_name,
                 'email' => $email,
                 'password' => $password,
-                'roles' => 'admin'
+                'roles' => 'admin',
+                'status' => 1
             ]);
 
             return response()->json([
@@ -184,7 +185,7 @@ class AdminController extends Controller
         // Send Greeting Message
         $message = new Message;
         $message->conversation_id = $conversation->id;
-        $message->user_id = $conversation->user_id;
+        $message->user_id = $conversation->admin_id;
         $message->message = 'Halo '.$conversation->user->name.
             '! Terima kasih telah menghubungi kami, saya '.$conversation->admin->name.
             ' dari tim support akan melayani pertanyaan anda. Ada yang bisa saya bantu?';
