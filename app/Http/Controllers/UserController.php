@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         if(session('session') == true)
         {
-            return view('chat');
+            return redirect(url('chat'));
         }
         else
         {
@@ -48,7 +48,7 @@ class UserController extends Controller
                 'roles' => 'user',
                 'status' => 0,
             ]);
-    
+
             return response()->json([
                 'status' => 'insert',
                 'data' =>  session('session'),
