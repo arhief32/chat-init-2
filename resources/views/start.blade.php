@@ -1,63 +1,6 @@
 @extends('user')
 
 @section('content')
-<!-- <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Start Chat</div>
-
-                <div class="card-body">
-                    <div class="alert alert-dismissible alert-primary" hidden>
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    </div>
-                    
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-4 col-form-label text-md-right">Email</label>
-                        <div class="col-md-6">
-                            <input id="email" type="email" class="form-control" name="email" required autofocus>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="full-name" class="col-md-4 col-form-label text-md-right">Full Name</label>
-                        <div class="col-md-6">
-                            <input id="full-name" type="text" class="form-control" name="full-name" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group row mb-0">
-                        <div class="col-md-8 offset-md-4">
-                            <button type="submit" class="btn btn-primary" id="submit-start">
-                                Start
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal" data-backdrop="static">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Start</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="text"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div> -->
-
 <!-- login area start -->
 <div class="login-area login-s2">
     <div class="container">
@@ -66,10 +9,9 @@
                 <div class="login-form-head">
                     <img src="{{ asset('public/assets/images/icon/logo-2.png') }}" />
                 </div>
-                <div class="login-form-head">
-                    <h4>Start!</h4>
-                </div>
+                    
                 <div class="login-form-body">
+                    <center><h4>Start!</h4></center>
                     <div class="form-gp">
                         <label for="email">Email Address</label>
                         <input type="email" id="email">
@@ -90,11 +32,32 @@
 </div>
 <!-- login area end -->
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Start</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="text"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Start Chat!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-$(document).ready(function(){
-    $('#submit-start').click(function(){
+$(document).ready(function(e){
+    $('#submit-start').click(function(e){
+
         var email = $('#email').val()
         var full_name = $('#full-name').val()
+
+        e.preventDefault()
         
         $.ajax({
             type: 'POST',
@@ -107,7 +70,7 @@ $(document).ready(function(){
                 full_name: full_name,
             },
             success: function(response){
-                console.log(response.status)
+                // window.location.replace('{{ url("chat") }}')
                 if(response.status == 'insert'){
                     $('.modal').modal();
                     $('#text').text('Anda telah sukses mendaftar sebagai user')
