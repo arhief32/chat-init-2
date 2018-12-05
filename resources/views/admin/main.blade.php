@@ -57,7 +57,6 @@
                 <div class="menu-inner">
                     <nav>
                         <ul class="metismenu" id="menu">
-                            <li><a href="{{ url('admin/dashboard') }}"><i class="ti-dashboard"></i> <span>Dashboard</span></a></li>
                             <li><a href="{{ url('admin/chat') }}"><i class="ti-comment-alt"></i> <span>Conversation</span></a></li>
                         </ul>
                     </nav>
