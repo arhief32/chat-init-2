@@ -60,7 +60,7 @@
 <script>
 $(document).ready(function(){
     Pusher.logToConsole = true;
-    var pusher = new Pusher('74f634a0084f2960c016', {
+    var pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
         cluster: 'ap1',
         forceTLS: true
     })
